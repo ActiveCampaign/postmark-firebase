@@ -1,0 +1,87 @@
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>Postmark + Firebase Sample App</title>
+</head>
+<body>
+    <!-- Include jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <!-- Initialize Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+    <script>
+        // TODO: Replace with your project's customized code snippet
+        var config = {
+            apiKey: "<API_KEY>",
+            authDomain: "<PROJECT_ID>.firebaseapp.com",
+            databaseURL: "https://<DATABASE_NAME>.firebaseio.com"
+        };
+        firebase.initializeApp(config);
+    </script>
+    <!-- Quick example of real-time database code -->
+    <script type="text/javascript">
+        (function($){
+            'use strict';
+            // ----------------------------------------------------------
+            // VARS
+            // ----------------------------------------------------------
+            var auth = firebase.auth(),
+                fbdb = firebase.database();
+            // ----------------------------------------------------------
+            // READY
+            // ----------------------------------------------------------
+            $(window).load(function(){
+                // Check for user, else redirect to marketing site
+                init();
+            });
+            // ----------------------------------------------------------
+            // INIT
+            // ----------------------------------------------------------
+            function init() {
+                auth.onAuthStateChanged(function(user) {
+                    // 1. Check to make sure the user is logged in
+                    // If thy're not, redirect them to the homepage
+                    if (user) {
+                        userInit(user);
+                    } else {
+                        // User is signed out.
+                        // Redirect to homepage
+                        window.location = '../';
+                    }
+                }, function(error) {
+                    console.log(error);
+                });
+            }
+            // ----------------------------------------------------------
+            // User
+            // ----------------------------------------------------------
+            function userInit(user) {
+                var userData;
+                // Check for user
+                fbdb.ref('/users/' + user.uid).once('value').then(function(snapshot) {
+                    // 2. Add new user to DB if they don't already exist
+                    if (snapshot.val() === null) {
+                        // This data is automatically pulled from Google when you auth
+                        userData = {
+                            displayName: user.displayName,
+                            email: user.email,
+                            photoURL: user.photoURL
+                        };
+                        // 3. Save user data
+                        fbdb.ref('users/' + user.uid).set(userData).then(function() {
+                            console.log('User data saved!');
+                        }).catch(function(error) {
+                            console.log(error);
+                        });
+                    } else {
+                        console.log('User details already added!');
+                    }
+                }).catch(function(error) {
+                    console.log(error);
+                });
+            }
+        })(jQuery);
+    </script>
+</body>
+</html>
