@@ -1,6 +1,6 @@
 ## Postmark + Firebase + Cloud Functions Tutorial
 
-The following is some demo code that is included within the following blog post (link coming soon!).
+The following is some demo code that is included within [this blog post](https://postmarkapp.com/blog/sending-transactional-emails-via-firebase-and-cloud-functions).
 
 ### File structure
 
