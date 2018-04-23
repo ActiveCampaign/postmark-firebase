@@ -27,7 +27,7 @@ exports = module.exports = functions.database.ref('/users/{uid}').onCreate((even
         return sendEmail(user);
 })
 
-function sendEmail(user, company) {
+function sendEmail(user) {
         // 5. Send welcome email to new users
         const mailOptions = {
                 from: '"Dave" <dave@example.net>',
